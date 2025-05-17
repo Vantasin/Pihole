@@ -124,7 +124,7 @@ Use this snippet in your Ansible playbook to template the `.env` file:
     dest: "{{ compose_root }}/{{ stack.name }}/.env"
 ```
 
-Where compose_root is /tank/docker/compose.
+Where `compose_root` is `/tank/docker/compose`.
 
 This allows you to inject variables from Ansible inventory or vault.
 
