@@ -109,7 +109,7 @@ No preflight is needed.
 Once deployed, access Pi-hole using:
 
 - **Web Interface (HTTP):** `http://localhost:88/admin` or replace `localhost` with your server’s IP address.  
-- **Admin Password:** Must be set via `WEBPASSWORD` in `.env` or it will generate a random password.
+- **Admin Password:** Must be set via `WEBPASSWORD` in `.env` or a random password will be generated.
 
 > **Note:** Consider using [Nginx Proxy Manager](https://github.com/Vantasin/Nginx-Proxy-Manager.git) for a domain name and HTTPS certificates via Let's Encrypt.
 
