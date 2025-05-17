@@ -134,7 +134,7 @@ This allows you to inject variables from Ansible inventory or vault.
 
 | File                 | Description                                           |
 |----------------------|-------------------------------------------------------|
-| `docker-compose.yml` | Pi Hole container definition                        |
+| `docker-compose.yml` | Pi-hole container definition                        |
 | `env.example`        | Example environment file for local overrides          |
 | `env.j2`             | Ansible template for generating `.env`                |
 | `preflight.sh`       | Optional script to prepare ZFS dataset (if enabled)   |
