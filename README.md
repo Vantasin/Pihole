@@ -130,14 +130,16 @@ This allows you to inject variables from Ansible inventory or vault.
 
 ---
 
-## 🧪 Included Scripts
+## 📄 File Overview
 
-| File            | Description                                |
-|-----------------|--------------------------------------------|
-| `preflight.sh`  | Validates and creates ZFS dataset          |
-| `git_push.py`   | Safely commit and push to all Git remotes  |
-| `env.j2`        | Jinja2 template for Ansible `.env` templating |
-| `env.example`   | Copy template to create `.env` manually     |
+| File                 | Description                                           |
+|----------------------|-------------------------------------------------------|
+| `docker-compose.yml` | Pi Hole container definition                        |
+| `env.example`        | Example environment file for local overrides          |
+| `env.j2`             | Ansible template for generating `.env`                |
+| `preflight.sh`       | Optional script to prepare ZFS dataset (if enabled)   |
+| `git_push.py`        | Helper script to stage, commit, and push to all remotes |
+| `summarize_codebase.sh` | Script to generate codebase summary                 |
 
 ---
 
