@@ -1,106 +1,92 @@
-# 🧱 Pi-hole Docker Stack with Optional ZFS Integration
+# 📦 Pi-hole Docker Compose Stack
+
+[![MIT License](https://img.shields.io/github/license/Vantasin/WatchTower?style=flat-square)](LICENSE)
+[![Woodpecker CI](https://img.shields.io/badge/Woodpecker%20CI-self--hosted-green?logo=drone&style=flat-square)](https://woodpecker-ci.org/)
+[![Docker Pulls: pihole/pihole](https://img.shields.io/docker/pulls/pihole/pihole?style=flat-square&logo=docker)](https://hub.docker.com/r/pihole/pihole)
+[![envsubst](https://img.shields.io/badge/envsubst-variable%20substitution-lightgrey?style=flat-square)](https://man7.org/linux/man-pages/man1/envsubst.1.html)
+[![ZFS](https://img.shields.io/badge/ZFS-OpenZFS-blue?style=flat-square)](https://openzfs.org/)
 
 This repository contains a minimal and production-ready [Pi-hole](https://pi-hole.net/) stack using Docker Compose. Pi-hole is a network-wide ad blocker that acts as a DNS sinkhole and optionally a DHCP server.
 
-It supports optional ZFS integration for advanced users who want to mount Portainer data volumes onto a ZFS dataset, while remaining fully usable without ZFS.
-
 ---
 
-## 📦 Features
-
-- Official `pihole/pihole:latest` image
-- Customizable ports via `.env`
-- Volume persistence with optional **ZFS** dataset support
-- DNS and optional DHCP services
-- Optional HTTPS web UI
-- Easy Git integration with `git_push.py`
-- Preflight ZFS dataset validation (`preflight.sh`)
-- Portable and Ansible-compatible
-
----
-
-## 🚀 Getting Started
-
-### 1. Clone the Repo
+## 📁 Directory Structure
 
 ```bash
-git clone https://github.com/Vantasin/Pihole.git
-cd Pihole
+tank/
+├── docker/
+│   ├── compose/
+│   │   └── Pihole/              # Git repo lives here
+│   │       ├── docker-compose.yml  # Main Docker Compose config
+│   │       ├── .env                # Runtime environment variables and secrets (gitignored!)
+│   │       ├── env.example         # Example .env file for reference
+│   │       ├── env.template        # Optional template
+│   │       ├── .woodpecker.yml     # CI/CD pipeline definition for auto-deploy
+│   │       └── README.md           # This file
+│   └── data/
+│       └── Pihole/              # Volume mounts and persistent data
 ```
-
-### 2. Set Up Environment
-
-Copy the example `.env` file and edit values:
-
-```bash
-cp env.example .env
-nano .env
-```
-
-Customize variables such as:
-
-- `PIHOLE_WEB_PORT=88`
-- `PIHOLE_HTTPS_PORT=8443`
-- `WEBPASSWORD=super-secret-password`
-- `PIHOLE_DATA_VOLUME=/tank/docker/volumes/PiHole`
-- `ZPOOL=tank`
-- `PIHOLE_DATASET_PATH=docker/volumes/PiHole`
-- `PIHOLE_DATASET=tank/docker/volumes/PiHole`
-
-### 3. Optional: Prepare ZFS Dataset
-
-If using ZFS, run the preflight script:
-
-```bash
-./preflight.sh
-```
-
-This will validate your ZFS pool and dataset path, creating it if it doesn’t exist.
 
 ---
 
-## 🐳 Deploy with Docker Compose
+## 🧰 Prerequisites
+
+* Docker Engine
+* Docker Compose V2
+* Git
+* (Optional) ZFS on Linux for dataset management
+
+> ⚠️ **Note:** These instructions assume your ZFS pool is named `tank`. If your pool has a different name (e.g., `rpool`, `zdata`, etc.), replace `tank` in all paths and commands with your actual pool name.
+
 ---
 
-## 🐳 Deployment Options
+## ⚙️ Setup Instructions
 
-### 🅰️ Option A: Run with ZFS
+1. **Create the stack directory and clone the repository**
 
-If you are using a ZFS-backed volume:
-
-1. Ensure your `.env` file defines ZFS variables like:
-   ```ini
-   ZPOOL=tank
-   PIHOLE_DATASET_PATH=docker/volumes/PiHole
-   PIHOLE_DATASET=tank/docker/volumes/PiHole
-   PIHOLE_DATA_VOLUME=/tank/docker/volumes/PiHole
-   ```
-
-2. Run the ZFS preflight script to verify or create the dataset:
+   If using ZFS:
    ```bash
-   ./preflight.sh
+   sudo zfs create -p tank/docker/compose/Pihole
+   cd /tank/docker/compose/Pihole
+   sudo git clone https://github.com/Vantasin/Pihole.git .
    ```
 
-3. Launch the container:
+   If using standard directories:
+   ```bash
+   mkdir -p ~/docker/compose/Pihole
+   cd ~/docker/compose/Pihole
+   git clone https://github.com/Vantasin/Pihole.git .
+   ```
+
+2. **Create the runtime data directory** (optional)
+
+   If using ZFS:
+   ```bash
+   sudo zfs create -p tank/docker/data/Pihole
+   ```
+
+   If using standard directories:
+   ```bash
+   mkdir -p ~/docker/data/Pihole
+   ```
+
+3. **Configure environment variables**
+
+   Copy and modify the `.env` file:
+
+   ```bash
+   sudo cp env.example .env
+   sudo nano .env
+   sudo chmod 600 .env
+   ```
+
+   > Alternatively generate the `.env` file using the `env.template` template with Woodpecker CI's `.woodpecker.yml`.
+
+4. **Start Pihole**
+
    ```bash
    docker compose up -d
    ```
-
----
-
-### 🅱️ Option B: Run without ZFS
-
-If you're not using ZFS, simply define the `PIHOLE_DATA_VOLUME` path in `.env`, for example:
-```ini
-PIHOLE_DATA_VOLUME=./data
-```
-
-Then bring up the stack:
-```bash
-docker compose up -d
-```
-
-No preflight is needed.
 
 ---
 
@@ -113,45 +99,36 @@ Once deployed, access Pi-hole using:
 
 > **Note:** Consider using [Nginx Proxy Manager](https://github.com/Vantasin/Nginx-Proxy-Manager.git) as a reverse proxy for HTTPS certificates via Let's Encrypt.
 
-## ⚙️ Optional: Ansible Integration
-
-Use this snippet in your Ansible playbook to template the `.env` file:
-
-```yaml
-- name: Template .env for {{ stack.name }}
-  template:
-    src: "{{ compose_root }}/{{ stack.name }}/env.j2"
-    dest: "{{ compose_root }}/{{ stack.name }}/.env"
-```
-
-Where `compose_root` is `/tank/docker/compose`.
-
-This allows you to inject variables from Ansible inventory or vault.
-
 ---
 
-## 📄 File Overview
+## 🚀 Continuous Deployment with Woodpecker
 
-| File                 | Description                                           |
-|----------------------|-------------------------------------------------------|
-| `docker-compose.yml` | Pi-hole container definition                        |
-| `env.example`        | Example environment file for local overrides          |
-| `env.j2`             | Ansible template for generating `.env`                |
-| `preflight.sh`       | Optional script to prepare ZFS dataset (if enabled)   |
-| `git_push.py`        | Helper script to stage, commit, and push to all remotes |
-| `summarize_codebase.sh` | Script to generate codebase summary                 |
+This project includes a `.woodpecker.yml` pipeline for automated deployment using [Woodpecker CI](https://woodpecker-ci.org/).
 
----
+When changes are pushed to the Git repository:
+1. The pipeline is triggered by the Woodpecker server.
+2. Secrets are securely injected from the Woodpecker UI.
+3. The `.env` file is rendered from `env.template` using `envsubst`.
+4. The Docker Compose stack is restarted to apply updates.
 
-## 📄 License
+### 🔐 Secret Injection
 
-This project is licensed under the [MIT License](LICENSE).
+Secrets must be added in the Woodpecker **Web UI > Repositories > Pihole > Secrets** section with the following names:
+
+| Secret Name                | Description                       |
+|----------------------------|-----------------------------------|
+| `WEBPASSWORD`              | FTLconf Web-server API password   |
+
+They are injected automatically into the pipeline environment as secure variables.
 
 ---
 
 ## 🙏 Acknowledgments
 
-- [pi-hole/docker-pi-hole](https://github.com/pi-hole/docker-pi-hole)
-- [Pi-hole documentation](https://docs.pi-hole.net/)
-- [Docker](https://www.docker.com/)
-- [ZFS on Linux](https://openzfs.org/)
+- [ChatGPT](https://openai.com/chatgpt) for assistance in generating setup scripts and templates.
+- [pi-hole/docker-pi-hole](https://github.com/pi-hole/docker-pi-hole) the official Docker image and source code for Pi-hole.
+- [Pi-hole documentation](https://docs.pi-hole.net/) the official user guide and admin reference for configuring and troubleshooting Pi-hole.
+- [Docker](https://www.docker.com/) for container orchestration and runtime.
+- [`envsubst`](https://man7.org/linux/man-pages/man1/envsubst.1.html) for lightweight environment variable substitution in template files.
+- [Woodpecker CI](https://woodpecker-ci.org/) for lightweight, self-hosted continuous integration.
+- [ZFS](https://openzfs.org/) for advanced local filesystem features, dataset organization, and snapshotting.
