@@ -21,7 +21,7 @@ steps:
     environment:
       PIHOLE_WEB_PORT: 88
       PIHOLE_HTTPS_PORT: 8443
-      PIHOLE_DATA_VOLUME: /tank/docker/data/PiHole
+      PIHOLE_DATA_VOLUME: /tank/docker/data/Pihole
       WEBPASSWORD:
         from_secret: WEBPASSWORD
     commands:
