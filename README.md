@@ -1,6 +1,6 @@
 # 📦 Pi-hole Docker Compose Stack
 
-[![MIT License](https://img.shields.io/github/license/Vantasin/WatchTower?style=flat-square)](LICENSE)
+[![MIT License](https://img.shields.io/github/license/Vantasin/Pihole?style=flat-square)](LICENSE)
 [![Woodpecker CI](https://img.shields.io/badge/Woodpecker%20CI-self--hosted-green?logo=drone&style=flat-square)](https://woodpecker-ci.org/)
 [![Docker Pulls: pihole/pihole](https://img.shields.io/docker/pulls/pihole/pihole?style=flat-square&logo=docker)](https://hub.docker.com/r/pihole/pihole)
 [![envsubst](https://img.shields.io/badge/envsubst-variable%20substitution-lightgrey?style=flat-square)](https://man7.org/linux/man-pages/man1/envsubst.1.html)

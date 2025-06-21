@@ -1,0 +1,43 @@
+---
+name: Deploy Pihole
+
+when:
+  event:
+    - push
+
+steps:
+  - name: git-pull
+    image: alpine/git
+    volumes:
+      - /tank:/tank
+    commands:
+      - git config --global --add safe.directory /tank/docker/compose/Pihole
+      - git -C /tank/docker/compose/Pihole pull origin main
+
+  - name: render-env
+    image: alpine:latest
+    volumes:
+      - /tank:/tank
+    environment:
+      PIHOLE_WEB_PORT: 88
+      PIHOLE_HTTPS_PORT: 8443
+      PIHOLE_DATA_VOLUME: /tank/docker/data/PiHole
+      WEBPASSWORD:
+        from_secret: WEBPASSWORD
+    commands:
+      # install envsubst
+      - apk add --no-cache gettext
+      # render env.j2 → .env in-place
+      - cd /tank/docker/compose/Pihole
+      - envsubst < env.template > .env
+      - chmod 600 .env
+
+  - name: restart-compose
+    image: docker:cli
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tank:/tank
+    commands:
+      - cd /tank/docker/compose/Pihole
+      - docker compose down
+      - docker compose up -d
