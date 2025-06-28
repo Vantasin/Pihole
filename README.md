@@ -107,7 +107,7 @@ Once deployed, access Pi-hole using:
   />
 </p>
 
-> **Note:** Consider using [Tailscale](https://tailscale.com/) then setting `Global nameservers` to your host server's Tailscale IP address and enabling `Override DNS servers`. This will make Pi-hole the sole DNS resolver for all devices on your Tailscale network and will allow Pi-hole to filter domains thereby blocking Ads.
+> **Note:** Consider using [Tailscale](https://tailscale.com/) then setting `Global nameservers` to your host server's (the server running Pi-hole) Tailscale IP address and enabling `Override DNS servers`. This will make Pi-hole the sole DNS resolver for all devices on your Tailscale network and will allow Pi-hole to filter domains thereby blocking Ads.
 
 <p align="center">
   <img
