@@ -99,6 +99,8 @@ Once deployed, access Pi-hole using:
 
 > **Note:** Consider using [Nginx Proxy Manager](https://github.com/Vantasin/Nginx-Proxy-Manager.git) as a reverse proxy for HTTPS certificates via Let's Encrypt.
 
+> **Note:** Consider using [Tailscale](https://tailscale.com/) then setting `Global nameservers` to your host server's Tailscale IP address and enabling `Override DNS servers`. This will make Pi-hole the sole DNS resolver for all devices on your Tailscale network and will allow Pi-hole to filter domains thereby blocking Ads.
+
 ---
 
 ## 🚀 Continuous Deployment with Woodpecker
