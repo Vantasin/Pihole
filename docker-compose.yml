@@ -6,8 +6,8 @@ services:
     networks:
       - npm_proxy
     ports:
-      - "53:53/tcp"
-      - "53:53/udp"
+      - "${PIHOLE_IP_BIND}:53:53/tcp"
+      - "${PIHOLE_IP_BIND}:53:53/udp"
       # Uncomment below if using Pi-hole as your DHCP server
       # - "67:67/udp"
     environment:
